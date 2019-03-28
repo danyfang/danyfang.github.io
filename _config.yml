@@ -1,1 +1,11 @@
+title: Xuqiang Fang's Personal Website
+email: danyfang7@gmail.com
+description: A cool description huh
+url: "https://danyfang.github.io"
+github_username: danyfang
+
+markdown: kramdown
 theme: minima
+include: ['_categories']
+
+
