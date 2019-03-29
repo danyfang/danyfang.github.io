@@ -1,1 +1,55 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://danyfang.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://danyfang.github.io/" rel="alternate" type="text/html" /><updated>2019-03-28T17:38:31+01:00</updated><id>https://danyfang.github.io/feed.xml</id><title type="html">Xuqiang Fang’s Personal Website</title><subtitle>A cool description huh</subtitle><entry><title type="html">My first ever personal website</title><link href="https://danyfang.github.io/2019/03/28/my-first-ever-website.html" rel="alternate" type="text/html" title="My first ever personal website" /><published>2019-03-28T00:00:00+01:00</published><updated>2019-03-28T00:00:00+01:00</updated><id>https://danyfang.github.io/2019/03/28/my-first-ever-website</id><content type="html" xml:base="https://danyfang.github.io/2019/03/28/my-first-ever-website.html">&lt;p&gt;Today I officially created my personal website. I hope you’ll find me interesting&lt;/p&gt;</content><author><name></name></author><summary type="html">Today I officially created my personal website. I hope you’ll find me interesting</summary></entry></feed>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>XUI</title>
+    <description></description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 30 Mar 2019 00:01:27 +0100</pubDate>
+    <lastBuildDate>Sat, 30 Mar 2019 00:01:27 +0100</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Welcome to Xuqiang's Website</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#title-this-is-where-you-put-the-title&quot; id=&quot;markdown-toc-title-this-is-where-you-put-the-title&quot;&gt;Title (this is where you put the title)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;title-this-is-where-you-put-the-title&quot;&gt;Title (this is where you put the title)&lt;/h2&gt;
+So this is my first post. I want to write something about it but I don’t know what to write yet. But I think it is a good idea to start practicing markdown format writing. I have used markdown a lot of times (for example, editting on stackoverflow) but I never actually payed attention to the syntax. Supposedly the syntax is very simple.
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;so this is the code section
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Fri, 29 Mar 2019 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/2019/03/29/learn-to-write-in-markdown/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/03/29/learn-to-write-in-markdown/</guid>
+        
+        <category>jekyll</category>
+        
+        <category>markdown</category>
+        
+        <category>website</category>
+        
+        
+        <category>general</category>
+        
+      </item>
+    
+      <item>
+        <title>Welcome to Jekyll</title>
+        <description>My first ever personal website</description>
+        <pubDate>Tue, 10 Feb 2015 16:14:54 +0100</pubDate>
+        <link>http://localhost:4000/2015/02/10/welcome-to-jekyll/</link>
+        <guid isPermaLink="true">http://localhost:4000/2015/02/10/welcome-to-jekyll/</guid>
+        
+        <category>jekyll</category>
+        
+        
+        <category>jekyll</category>
+        
+      </item>
+    
+  </channel>
+</rss>
