@@ -18,29 +18,6 @@
     <link rel="alternate" type="application/rss+xml" title="XUI" href="http://localhost:4000/feed.xml ">
 
 
-    <script>
-    // 百度统计代码
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?cf8506e0ef223e57ff6239944e5d46a4";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-    </script>
-
-
-    <script>
-    // google analytics
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-72449510-4', 'auto');
-      ga('send', 'pageview');
-
-    </script>
 
 
 
@@ -133,6 +110,145 @@
         <small>This site contains all my blogs</small>
         <hr>
         <ul>
+            
+              <li>
+                <h2>
+                  <a class="post-link" href="/2019/04/06/visualize-augmented-images-in-tensorflow-odapi/">Visualize Augmented Images in Tensorflow ODAPI</a>
+                </h2>
+                <div class="label">
+                    <div class="label-card">
+                        <i class="fa fa-calendar"></i>2019-04-06
+                    </div>
+                    <div class="label-card">
+                        <i class="fa fa-user"></i>xui
+                        
+                    </div>
+                    <div class="label-card">
+                        
+                    </div>
+
+                    <div class="label-card">
+                    
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#tensorflow" title="Category: tensorflow" rel="category">tensorflow</a>&nbsp;
+    
+        <a href="/category/#object-detection" title="Category: object-detection" rel="category">object-detection</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+                    </div>
+
+                    <div class="label-card">
+                    
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <a href="/tag/#tensorflow" title="Tag: tensorflow" rel="tag">tensorflow</a>&nbsp;
+    
+        <a href="/tag/#object-detection-api" title="Tag: object-detection-api" rel="tag">object-detection-api</a>&nbsp;
+    
+        <a href="/tag/#data-augmentation" title="Tag: data-augmentation" rel="tag">data-augmentation</a>
+    
+  
+
+</span>
+
+                    </div>
+                </div>
+                <div class="excerpt">
+                    <ul id="markdown-toc">
+  <li><a href="#visualize-augmented-images-in-tensorflow-object-detection-api" id="markdown-toc-visualize-augmented-images-in-tensorflow-object-detection-api">Visualize augmented images in tensorflow object detection api</a>    <ul>
+      <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+      <li><a href="#augmentation_testpy" id="markdown-toc-augmentation_testpy">Augmentation_test.py</a></li>
+      <li><a href="#usage" id="markdown-toc-usage">Usage</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="visualize-augmented-images-in-tensorflow-object-detection-api">Visualize augmented images in tensorflow object detection api</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Google released its tensorflow object detectio api to open source and this api is really well-provided, both in terms of the framework design and source code quality. I have been reading the source code a few months ago and I am now able to utilize the api to provide some custom functionalities.</p>
+
+<p>We all know that having enough training data in deep learning is important but sometimes it is very difficult to gather as much data as you need. And data augmentation is an useful technique to make some transformations to the original data so that there are more data to feed to the model during training.</p>
+
+<p>I came across several questions related to the augmentation options within the api. The augmentations are part of the whole training pipeline, so it is not easy to visualize the augmented images, and some users find it very difficult to understand what kind of augmentation options they need.</p>
+
+<p>I read the source code and I found that the testing package provided the tool for us to test the augmentation options, I made a little change and wrote the following script <code class="highlighter-rouge">augmentation_test.py</code>.</p>
+
+<h2 id="augmentation_testpy">Augmentation_test.py</h2>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">absl.testing</span> <span class="kn">import</span> <span class="n">parameterized</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">from</span> <span class="nn">scipy.misc</span> <span class="kn">import</span> <span class="n">imsave</span><span class="p">,</span> <span class="n">imread</span>
+
+<span class="kn">from</span> <span class="nn">object_detection</span> <span class="kn">import</span> <span class="n">inputs</span>
+<span class="kn">from</span> <span class="nn">object_detection.core</span> <span class="kn">import</span> <span class="n">preprocessor</span>
+<span class="kn">from</span> <span class="nn">object_detection.core</span> <span class="kn">import</span> <span class="n">standard_fields</span> <span class="k">as</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="kn">import</span> <span class="n">config_util</span>
+<span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="kn">import</span> <span class="n">test_case</span>
+
+<span class="n">FLAGS</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">FLAGS</span>
+
+<span class="k">class</span> <span class="nc">DataAugmentationFnTest</span><span class="p">(</span><span class="n">test_case</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="nf">test_apply_image_and_box_augmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">data_augmentation_options</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">preprocessor</span><span class="o">.</span><span class="n">random_horizontal_flip</span><span class="p">,</span> <span class="p">{</span>
+        <span class="p">})</span>
+    <span class="p">]</span>
+    <span class="n">data_augmentation_fn</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">augment_input_data</span><span class="p">,</span>
+        <span class="n">data_augmentation_options</span><span class="o">=</span><span class="n">data_augmentation_options</span><span class="p">)</span>
+    <span class="n">tensor_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">InputDataFields</span><span class="o">.</span><span class="n">image</span><span class="p">:</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="n">imread</span><span class="p">(</span><span class="s">'input.image'</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)),</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">InputDataFields</span><span class="o">.</span><span class="n">groundtruth_boxes</span><span class="p">:</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+    <span class="p">}</span>
+    <span class="n">augmented_tensor_dict</span> <span class="o">=</span> 
+        <span class="n">data_augmentation_fn</span><span class="p">(</span><span class="n">tensor_dict</span><span class="o">=</span><span class="n">tensor_dict</span><span class="p">)</span>
+    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+      <span class="n">augmented_tensor_dict_out</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">augmented_tensor_dict</span><span class="p">)</span>
+    <span class="n">imsave</span><span class="p">(</span><span class="s">'output.image'</span><span class="p">,</span><span class="n">augmented_tensor_dict_out</span><span class="p">[</span><span class="n">fields</span><span class="o">.</span><span class="n">InputDataFields</span><span class="o">.</span><span class="n">image</span><span class="p">])</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+  <span class="n">tf</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>The code above took some code samples from the testing package <a href="https://github.com/tensorflow/models/blob/master/research/object_detection/inputs_test.py">input_test.py</a>. In the script, it defined a <code class="highlighter-rouge">DataAugmentationFnTest</code> test class and this class has a method called <code class="highlighter-rouge">test_apply_image_and_box_augmentation</code>.</p>
+
+<h2 id="usage">Usage</h2>
+<p>There are several parts to be configured in order to visualize the augmentation effects on the images.
+<code class="highlighter-rouge">input.image</code> and <code class="highlighter-rouge">output.image</code> need to be configured to the correct input image path and output image path. 
+<code class="highlighter-rouge">data_augmentation_options = []</code>, in this list, you should add the augmentation options that you want to test, if you have several options, you should append them to the list as well.</p>
+
+
+                </div>
+                <div class="read-all">
+                    <a  href="/2019/04/06/visualize-augmented-images-in-tensorflow-odapi/"><i class="fa fa-newspaper-o"></i>Read All</a>
+                </div>
+                <hr>
+              </li>
             
               <li>
                 <h2>
@@ -292,6 +408,8 @@
                 </div>
                 <ul class="content-ul" recent>
                     
+                        <li><a href="/2019/04/06/visualize-augmented-images-in-tensorflow-odapi/">Visualize Augmented Images in Tensorflow ODAPI</a></li>
+                    
                         <li><a href="/2019/03/29/learn-to-write-in-markdown/">Welcome to Xuqiang's Website</a></li>
                     
                         <li><a href="/2015/02/10/welcome-to-jekyll/">Welcome to Jekyll</a></li>
@@ -320,6 +438,24 @@
                         <a href="/category/#general" class="categories-list-item" cate="general">
                             <span class="name">
                                 general
+                            </span>
+                            <span class="badge">1</span>
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/category/#tensorflow" class="categories-list-item" cate="tensorflow">
+                            <span class="name">
+                                tensorflow
+                            </span>
+                            <span class="badge">1</span>
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="/category/#object-detection" class="categories-list-item" cate="object-detection">
+                            <span class="name">
+                                object-detection
                             </span>
                             <span class="badge">1</span>
                         </a>
@@ -363,6 +499,27 @@
                       
                       <a href="/tag/#website" style="font-size: 9pt; color: #999;">website</a>
                     
+                      
+                      
+                      
+                      
+                      
+                      <a href="/tag/#tensorflow" style="font-size: 9pt; color: #999;">tensorflow</a>
+                    
+                      
+                      
+                      
+                      
+                      
+                      <a href="/tag/#object-detection-api" style="font-size: 9pt; color: #999;">object-detection-api</a>
+                    
+                      
+                      
+                      
+                      
+                      
+                      <a href="/tag/#data-augmentation" style="font-size: 9pt; color: #999;">data-augmentation</a>
+                    
                 </div>
             </div>
 
@@ -394,8 +551,8 @@
             Contact me at: 
             <a href="https://github.com/danyfang" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
             <a href="mailto:danyfang7@gmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>   
-            <a href="https://www.zhihu.com/people/danyfang" title="Zhihu"><i class="iconfont icon-daoruzhihu"></i></a>     
-            <a href="https://www.linkedin.com/in/xuqiangfang" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
+            <a href="https://www.zhihu.com/people/fangxuqiang" title="Zhihu"><i class="iconfont icon-daoruzhihu"></i></a>     
+            <a href="https://www.linkedin.com/in/xuqiang-fang-68655845" title="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>  
         </p>
         <p class="power">
             <span>
